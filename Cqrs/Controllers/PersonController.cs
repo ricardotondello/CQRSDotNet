@@ -18,12 +18,7 @@ namespace Cqrs.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPersons(string Name)
-        {
-            var response = await mediator.Send(new PersonByName.Query(Name));
-            return Ok(response);
-
-        }
+        public async Task<IActionResult> GetPersons(string Name) => Ok(await mediator.Send(new PersonByName.Query(Name)));
 
         [HttpPost]
         public async Task<IActionResult> SetPerson(AddPerson.Command command) => Ok(await mediator.Send(command));
