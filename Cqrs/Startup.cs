@@ -34,7 +34,7 @@ namespace Cqrs
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Cqrs", Version = "v1" });
             });
-            services.AddSingleton<Repository>();
+            services.AddSingleton<IRepository, Repository>();
             services.AddMediatR(typeof(Startup).Assembly);
             services.AddAutoMapper(typeof(Startup));
         }

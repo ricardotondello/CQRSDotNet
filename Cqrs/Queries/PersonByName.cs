@@ -19,24 +19,27 @@ namespace Cqrs.Queries
         //Handler
         public class Handler : IRequestHandler<Query, List<Response>>
         {
-            private readonly IMapper mapper;
+            private readonly IMapper _mapper;
 
-            private Repository _repository { get; }
-            public Handler(Repository repository, IMapper mapper)
+            private readonly IRepository _repository;
+            public Handler(IRepository repository, IMapper mapper)
             {
                 _repository = repository;
-                this.mapper = mapper;
+                _mapper = mapper;
             }
 
             public async Task<List<Response>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var results = _repository.People.Where(x => x.Name.Contains(request.Name, 
+                var people = _repository.GetPeople();
+                    
+                if(string.IsNullOrWhiteSpace(request.Name))
+                    return await Task.FromResult(_mapper.Map<List<Response>>(people));
+
+                var results = people.Where(x => x.Name.Contains(request.Name,
                     StringComparison.InvariantCultureIgnoreCase));
 
-                if (results is null) return new List<Response>();
-
                 return await Task.FromResult(
-                      mapper.Map<List<Response>>(results)
+                      _mapper.Map<List<Response>>(results)
                     );
             }
         }

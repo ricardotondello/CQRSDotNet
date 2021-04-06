@@ -14,20 +14,20 @@ namespace Cqrs.Commands
 
         public class Handler : IRequestHandler<Command, PersonResponse>
         {
-            private readonly Repository repository;
-            private readonly IMapper mapper;
+            private readonly IRepository _repository;
+            private readonly IMapper _mapper;
 
-            public Handler(Repository repository, IMapper mapper)
+            public Handler(IRepository repository, IMapper mapper)
             {
-                this.repository = repository;
-                this.mapper = mapper;
+                _repository = repository;
+                _mapper = mapper;
             }
 
             public async Task<PersonResponse> Handle(Command request, CancellationToken cancellationToken)
             {
-                var person = mapper.Map<Person>(request.personRequest);
-                repository.People.Add(person);
-                return await Task.FromResult(mapper.Map<PersonResponse>(person));
+                var person = _mapper.Map<Person>(request.personRequest);
+                _repository.AddPerson(person);
+                return await Task.FromResult(_mapper.Map<PersonResponse>(person));
             }
         }
 
