@@ -1,6 +1,8 @@
 ﻿using Bogus;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Cqrs.Domain;
 
 namespace Cqrs.Database
 {
@@ -17,7 +19,24 @@ namespace Cqrs.Database
                 .Generate(100);
         }
 
-        public List<Domain.Person> GetPeople() => _people;
+        public List<Domain.Person> GetPeople(string name, PaginationFilter pagination = null)
+        {
+            var people = _people;
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                people = _people.Where(x => x.Name.Contains(name,
+                    StringComparison.InvariantCultureIgnoreCase)).ToList();
+            }
+
+            if (pagination != null)
+            {
+                var skip = (pagination.PageNumber - 1) * pagination.PageSize;
+
+                people = people.Skip(skip).Take(pagination.PageSize).ToList();
+            }
+
+            return people;
+        }
 
         public void AddPerson(Domain.Person person)
         {

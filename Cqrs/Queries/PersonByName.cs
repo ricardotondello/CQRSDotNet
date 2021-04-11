@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Cqrs.Contracts.Responses;
+using Cqrs.Contracts.Resquests.Queries;
+using Cqrs.Domain;
 
 namespace Cqrs.Queries
 {
@@ -13,11 +16,11 @@ namespace Cqrs.Queries
     {
 
         //Query / Command
-        public record Query(string Name) : IRequest<List<Response>>;
+        public record Query(PaginationQuery paginationQuery, string Name) : IRequest<PageInfo<PersonResponse>>;
 
 
         //Handler
-        public class Handler : IRequestHandler<Query, List<Response>>
+        public class Handler : IRequestHandler<Query, PageInfo<PersonResponse>>
         {
             private readonly IMapper _mapper;
 
@@ -28,28 +31,24 @@ namespace Cqrs.Queries
                 _mapper = mapper;
             }
 
-            public async Task<List<Response>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<PageInfo<PersonResponse>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var people = _repository.GetPeople();
-                    
-                if(string.IsNullOrWhiteSpace(request.Name))
-                    return await Task.FromResult(_mapper.Map<List<Response>>(people));
 
-                var results = people.Where(x => x.Name.Contains(request.Name,
-                    StringComparison.InvariantCultureIgnoreCase));
+                var paginationFilter = _mapper.Map<PaginationFilter>(request.paginationQuery);
 
-                return await Task.FromResult(
-                      _mapper.Map<List<Response>>(results)
-                    );
+                var people = _repository.GetPeople(request.Name, paginationFilter);
+
+                var peopleResponse = _mapper.Map<List<PersonResponse>>(people);
+
+                var paginationResponse = new PageInfo<PersonResponse>
+                {
+                    Data = peopleResponse,
+                    PageNumber = request.paginationQuery.GetPageNumber(),
+                    PageSize = request.paginationQuery.GetPageSize()
+                };
+
+                return await Task.FromResult(paginationResponse);
             }
         }
-
-        //Response
-        public record Response {
-            public string Id { get; set; }
-            public string Name { get; set; }
-            public string Surname { get; set; }
-            public int Age { get; set; }
-        };
     }
 }

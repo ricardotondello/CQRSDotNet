@@ -3,6 +3,7 @@ using Cqrs.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Cqrs.Contracts.Resquests.Queries;
 
 namespace Cqrs.Controllers
 {
@@ -18,7 +19,7 @@ namespace Cqrs.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPersons(string Name) => Ok(await mediator.Send(new PersonByName.Query(Name)));
+        public async Task<IActionResult> GetPersons([FromQuery] PaginationQuery paginationQuery, string Name) => Ok(await mediator.Send(new PersonByName.Query(paginationQuery, Name)));
 
         [HttpPost]
         public async Task<IActionResult> SetPerson(AddPerson.Command command) => Ok(await mediator.Send(command));
