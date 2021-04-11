@@ -1,4 +1,4 @@
-﻿namespace Cqrs.Contracts.Responses
+﻿namespace Cqrs.Contracts.Contracts.Responses
 {
     public class PersonResponse
     {

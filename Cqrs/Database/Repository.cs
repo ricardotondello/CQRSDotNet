@@ -12,7 +12,7 @@ namespace Cqrs.Database
         public Repository()
         {
             _people = new Faker<Domain.Person>().
-                CustomInstantiator(f => new Domain.Person(Guid.NewGuid(),
+                CustomInstantiator(f => Domain.Person.Create(Guid.NewGuid(),
                     f.Person.FirstName,
                     f.Person.LastName,
                     f.Person.DateOfBirth))

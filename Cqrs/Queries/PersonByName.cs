@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using Cqrs.Database;
 using MediatR;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Cqrs.Contracts.Responses;
-using Cqrs.Contracts.Resquests.Queries;
+using Cqrs.Contracts.Contracts.Requests.Queries;
+using Cqrs.Contracts.Contracts.Responses;
 using Cqrs.Domain;
 
 namespace Cqrs.Queries

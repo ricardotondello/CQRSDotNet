@@ -3,7 +3,7 @@ using Cqrs.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Cqrs.Contracts.Resquests.Queries;
+using Cqrs.Contracts.Contracts.Requests.Queries;
 
 namespace Cqrs.Controllers
 {

@@ -12,14 +12,16 @@ namespace Cqrs.Domain
         public string Surname { get; }
         public DateTime DateOfBirth { get; }
 
-        private Person(){ }
-        public Person(Guid id, string name, string surname, DateTime dateOfBirth)
+        private Person(Guid id, string name, string surname, DateTime dateOfBirth)
         {
             Id = id;
             Name = name;
             Surname = surname;
             DateOfBirth = dateOfBirth;
         }
+
+        public static Person Create(Guid id, string name, string surname, DateTime dateOfBirth)
+            => new (id, name, surname, dateOfBirth);
     }
 
     

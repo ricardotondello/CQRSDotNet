@@ -5,12 +5,14 @@ using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Cqrs.Contracts.Contracts.Requests;
+using Cqrs.Contracts.Contracts.Responses;
 
 namespace Cqrs.Commands
 {
     public static class AddPerson
     {
-        public record Command(PersonRequest personRequest) : IRequest<PersonResponse>;
+        public record Command(AddPersonRequest PersonRequest) : IRequest<PersonResponse>;
 
         public class Handler : IRequestHandler<Command, PersonResponse>
         {
@@ -25,22 +27,10 @@ namespace Cqrs.Commands
 
             public async Task<PersonResponse> Handle(Command request, CancellationToken cancellationToken)
             {
-                var person = _mapper.Map<Person>(request.personRequest);
+                var person = _mapper.Map<Person>(request.PersonRequest);
                 _repository.AddPerson(person);
                 return await Task.FromResult(_mapper.Map<PersonResponse>(person));
             }
-        }
-
-        public record PersonRequest
-        {
-            public string Name { get; set; }
-            public string Surname { get; set; }
-            public DateTime DateOfBirth { get; set; }
-        }
-
-        public record PersonResponse
-        {
-            public string Id { get; set; }
         }
     }
 }
